@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--[if IE]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <![endif]-->
+    <title>Bitwise Neural Networks on FPGA: High-Speed and Low-Power</title>
+    <!--REQUIRED STYLE SHEETS-->
+    <!-- BOOTSTRAP CORE STYLE CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/bootflat.css" rel="stylesheet" />
+    <!-- FONTAWESOME STYLE CSS -->
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- VEGAS STYLE CSS -->
+    <link href="assets/scripts/vegas/jquery.vegas.min.css" rel="stylesheet" />
+    <!-- CUSTOM STYLE CSS -->
+    <link href="assets/css/style.css" rel="stylesheet" />
+    <!-- GOOGLE FONT -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <!--Header section  -->
+    <div class="container" id="home">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h1 class="head-main">Bitwise Neural Networks on FPGA</h1>
+                <h2 class="head-sub-main"> High-Speed and Low-Power</h2>
+                <h3 class="head-last"><a href="https://www.linkedin.com/in/yunfanye">Yunfan Ye</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/araina-huang-00853b96">Yayun Huang</a></h3>
+            </div>
+        </div>
+    </div>
+    <!--End Header section  -->
+    <!-- Navigation -->
+    <nav class="navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"> FBNN</a>
+            </div>
+            <!-- Collect the nav links for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse pull-right">
+                <ul class="nav navbar-nav">
+                    <li><a href="index.html">FINAL</a>
+                    </li>
+                    <li><a href="proposal.html">PROPOSAL</a>
+                    </li>
+                    <li><a href="checkpoint.html">CHECKPOINT</a>
+                    </li>
+                    <!-- <li><a href="index.html#price-sec">FINAL REPORT</a>
+                    </li> -->
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <!--End Navigation -->
+    <!--About Section-->
+    <section class="for-full-back color-white " id="about">
+        <div class="container introduction">
+            <div class="row text-center">
+                <div class="col-md-8 col-md-offset-2 ">
+                    <h1>Checkpoint</h1>
+                    <!-- <h4>
+                        <strong>
+                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                         Curabitur nec nisl odio. Mauris vehicula at nunc id posuere.
+                            </strong>
+                    </h4> -->
+                </div>
+            </div>
+            <div class="row g-pad-bottom">
+                <div class="col-md-12">
+                    <div class="img-alg-auto"><img src="assets/img/alg.jpg" style="width:450px; height:373px;"></div>
+                    <h5 style="text-align: center;">Figure 1. Illustration of parallel alogrithm in FPGA</h5>
+                    <h2>Progress Review</h2>
+                    <p>
+                        Baseline Implementation. As stated in the proposal, we do not have readily available code for BNN. Thus, we implement a baseline method based on the paper.  Specifically, it takes two steps to train a bitwise neural network. First, we trained a real-valued network that takes either bitwise inputs or real-valued inputs ranged between -1 and 1 by TensorFlow. Second, we binarized the network and use noisy backpropagation to update the weights.  
+                        <br>
+                        <br>
+                        FPGA implementation. With a fairly good pretrained BNN, we began to implement code on FPGA. Given the amount of weights of the neural network, it is impossible to all weights into logic gates. Therefore, we believe that we need to store all the binary weights in on-chip RAM and calculate the results block by block. Specifically, in our scenario, we properly arrange the the weights to 1024 bits per block. Every time we read out 1024 weights, calculate and store the intermedia results in counters. Then, we shift all the input data by 1 bit. Read the new weights and repeat the previous steps for 1024 times. Finally, if the counter has counted more 1s than 0s, we output 1; otherwise, we output 0. This module is shown in Figure 1, and this module can be reused for different layers to reduce the resource consumptions.
+                    </p>
+                    <h2>Exhibits for the Parallelism Competition</h2>
+                    <p>Deep neural networks (DNNs) have substantially pushed the state-of the-art in a wide range of tasks, including speech recognition and computer vision. However, DNNs also require a wealth of compute resources, and thus can benefit greatly from parallelization.</p>
+                    <p>Moreover, power consumption recently has gained massive attentions due to the emerging of mobile devices. As is well know, running real-time text detection and recognition tasks on standalone devices, like a pair of glasses, will quickly drain the battery. Therefore, we may need to exploit the heterogeneity of hardware to boost both performance and efficiency.
+                    </p>
+                    <h2>Remaining Issues</h2>
+                    <p> Currently, we get stuck with how to choose a proper FPGA with enough storage of nearly 6MB for our implementation. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End About Section-->
+    <!-- About Team Section -->
+    <section class="for-full-back color-light challenge" id="about-team">
+        <div class="container">
+            <div class="row introduction">
+                <div class="col-md-12">
+                    <h2 class="text-center">Deliverables</h2>
+                    <ul>
+                        <li>(Completed) Baseline implementation
+                            <br> Since there is no readily available codebase, we will try to implement a baseline algorithm in open-source frameworks, like caffe, torch or tensorflow.</li>
+                        <li>Evaluation
+                            <br> Evaluation. We will evaluate our implementation by comparing our runtime to the baseline. </li>
+                        <li>Hardware demo
+                            <br> Hardware demo. Hopefully, we can deliver a hardware demo on FPGA. The ideal demo would be of three parts: a camera used to generate inputs, a segment display used to display the results, and FPGA.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End About Team Section -->
+    <!-- Pricing Section -->
+    <section class="for-full-back color-light schedule" id="price-sec">
+        <div class="container">
+            <div class="row text-center">
+                <h2 class="text-center">Schedule</h2>
+                <!--TimeLine
+      ================================================== -->
+                <div class="col-md-12">
+                    <div class="timeline">
+                        <dl>
+                            <dt>Apr 2016</dt>
+                            <dd class="pos-right clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Apr 9</h6>
+                                        <p>(Completed) Get familiar with training bitwise neural networks and implement a correct baseline algorithm.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dd class="pos-left clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Apr 16</h6>
+                                        <p>(Completed) Tune parameters and implement retrain process to approach the results of the paper.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dd class="pos-right clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Apr 23</h6>
+                                        <p>(Completed) Implement classifying phase by VHDL.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dd class="pos-left clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Apr 29</h6>
+                                        <p>(Completed) Prepare for final exam and analyze the feasibility of porting the code to hardware.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dt>May 2016</dt>
+                            <dd class="pos-right clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> May 6</h6>
+                                        <p>Port the code to hardware and analyze the results.<a href="#ref3"> [3]</a>.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dd class="pos-left clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> May 8</h6>
+                                        <p>Write final report and prepare for competition.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End Pricing Section -->
+    <!-- <section class="for-full-back color-white challenge" id="about-team">
+        <div class="container">
+            <div class="row introduction">
+                <div class="col-md-12">
+                    <h2 class="text-center">Reference</h2>
+                    <ul>
+                        <li id="ref1">[1] Minje Kim, and Paris Smaragdis. Bitwise Neural Networks. arXiv preprint arXiv:1601.06071v1, 2016</li>
+                        <li id="ref2">[2] Stuart Byma.  <a href="http://wiki.epfl.ch/edicpublic/documents/Candidacy%20exam/PR15byma_edic_proposal.pdf">Programming Datacenter-Scale Reconfigurable Systems.</a> Accessed April 1st.</li>
+                        <li id="ref3">[3] Ravi Mullapudi. <a href="https://github.com/ravi-teja-mullapudi/Halide-NN">https://github.com/ravi-teja-mullapudi/Halide-NN.</a> Accessed April 1st.</li>
+                        <li id="ref4">[4] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep Residual Learning for Image Recognition. arXiv preprint arXiv:1512.03385v1, 2015</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    <!--footer Section -->
+    <div class="for-full-back " id="footer">
+        2016 arainhyy.github.io | All Right Reserved
+    </div>
+    <!--End footer Section -->
+    <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY  -->
+    <script src="assets/plugins/jquery-1.10.2.js"></script>
+    <!-- BOOTSTRAP CORE SCRIPT   -->
+    <script src="assets/plugins/bootstrap.js"></script>
+    <!-- VEGAS SLIDESHOW SCRIPTS -->
+    <script src="assets/plugins/vegas/jquery.vegas.min.js"></script>
+    <!-- CUSTOM SCRIPTS -->
+    <script src="assets/js/custom.js"></script>
+</body>
+
+</html>

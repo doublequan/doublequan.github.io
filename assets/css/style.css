@@ -1,0 +1,389 @@
+﻿/*=============================================================
+    Authour URI: www.binarytheme.com
+    License: Commons Attribution 3.0
+
+    http://creativecommons.org/licenses/by/3.0/
+
+    100% To use For Personal And Commercial Use.
+    IN EXCHANGE JUST GIVE US CREDITS AND TELL YOUR FRIENDS ABOUT US
+   
+    ========================================================  */
+
+
+
+/*=======================================
+    GENERAL STYLES
+==================================================*/
+body {
+          font-family:'Open Sans', sans-serif;
+    font-size:14px;
+}
+
+.nav a {
+    color:#ffffff !important;
+}
+.navbar-header a {
+    color:#ffffff !important;
+    padding-right:100px;
+}
+
+.text-center {
+    text-align:center;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family:'Open Sans', sans-serif;
+}
+
+h1 {
+    line-height:80px;
+    font-weight:900;
+    font-size:60px;
+    padding:30px 20px 10px 20px;
+}
+h3 {
+    line-height:30px;
+    padding-bottom:20px;
+}
+h4 {
+    line-height:40px;
+    padding-bottom:40px;
+}
+
+p {
+    font-weight:300;
+    line-height:30px;
+    padding-bottom:20px;
+}
+.col-md-12 > h5 {
+    font-size: 15px;
+        line-height: 30px;
+}
+.space-free {
+    height:100px;
+}
+
+.g-pad-bottom {
+    padding-bottom:70px;
+}
+.for-full-back {
+     /* IE 8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
+
+  /* IE 5-7 */
+  filter: alpha(opacity=90);
+
+  /* Netscape */
+  -moz-opacity: 0.97;
+
+  /* Safari 1.x */
+  -khtml-opacity: 0.97;
+
+  /* Good browsers */
+  opacity: 0.97;
+}
+
+section {
+    padding-top:60px;
+}
+
+.introduction p{
+    font-size: 15px;
+}
+
+.introduction li {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 30px;
+    padding-bottom: 20px;
+}
+.introduction h2 {
+    /*font-size: 35px;*/
+}
+/*=======================================
+    COLOR CODES
+==================================================*/
+.color-white {
+   background-color:#fff!important;
+}
+.color-dark {
+   background-color:#696969!important;
+}
+
+.color-light {
+   background-color:#E9E9E9!important;
+}
+
+/*=======================================
+    HEADER STYLES
+==================================================*/
+.head-main {
+    font-size:65px !important;
+    font-weight:900!important;
+    color:#fff!important;
+    padding:180px 20px 10px 20px;
+}
+.head-sub-main {
+    font-size:40px !important;
+    font-weight:600!important;
+    color:#fff!important;
+    padding:5px 20px 10px 20px;
+}
+.head-last {
+    font-size:20px !important;
+    font-weight:300!important;
+    color:#fff!important;
+    padding:5px 20px 100px 20px;
+}
+.head-last a {
+    color: #fff;
+}
+.head-last a:hover {
+    color: #fff;
+}
+
+/*=======================================
+    NAVIGATION STYLES
+==================================================*/
+
+
+nav {
+	position: absolute;
+	width: 100%;
+    background: #fff;
+    z-index:99;
+}
+.fixed {
+	position: fixed; 
+	top: 0; 
+	min-height: 50px; 
+	z-index: 99;
+}
+
+.navbar-inverse {
+background-color: #3D3D3D;
+border-color: #3D3D3D;
+}
+
+/*=======================================
+    ABOUT TEAM STYLES
+==================================================*/
+
+.team-member {
+    float: left;
+    position: relative;
+    width: 100%;
+}
+.team-member > img {
+    float: left;
+    width: 100%;
+}
+.team-member > h3 {
+    background: rgba(95, 154, 255, 0.85);
+    bottom: 25px;
+    color:#fff;
+    font-size: 20px;
+    letter-spacing: 1px;
+    line-height: 16px;
+    padding: 15px 0;
+    position: absolute;
+    text-align: center;  
+    width: 100%;
+    
+	-webkit-transition: all 0.3s ease 0s;
+	-moz-transition: all 0.3s ease 0s;
+	-ms-transition: all 0.3s ease 0s;
+	-o-transition: all 0.3s ease 0s;
+	transition: all 0.3s ease 0s;
+}
+.team-member:hover > h3 {
+    background: #000;
+    bottom: -55px;
+    color: #FFFFFF;	
+	-webkit-transition: all 0.3s ease 0s;
+	-moz-transition: all 0.3s ease 0s;
+	-ms-transition: all 0.3s ease 0s;
+	-o-transition: all 0.3s ease 0s;
+	transition: all 0.3s ease 0s;
+}
+
+/*=======================================
+    PRICING STYLES
+==================================================*/
+.schedule {
+    padding-top: 10px;
+    padding-bottom: 40px;
+}
+
+.plan {
+    background: #eef1f3;
+    padding: 0 0 15px 0;
+    margin: 30px 0px;
+    list-style: none;
+    text-align: center;
+  
+    -webkit-transition: all 0.2s ease;
+       -moz-transition: all 0.2s ease;
+         -o-transition: all 0.2s ease;
+            transition: all 0.2s ease;
+}
+
+.plan:hover {
+    -webkit-transform: scale(1.2);
+       -moz-transform: scale(1.2);
+        -ms-transform: scale(1.2);
+         -o-transform: scale(1.2);
+            transform: scale(1.2);
+}
+
+.plan li {
+    padding: 15px 0px;
+    color: #434749;
+    border-top: 1px dashed #000;
+}
+
+.plan li.plan-head {
+   padding: 15px 0px;
+background-color: #000000;
+color: #FFFFFF;
+line-height: 20px;
+font-size: 20px;
+font-weight: 600;
+border: none;
+   }
+
+.plan li.main-price {
+   padding: 25px 0px;
+background-color: #AA570A;
+color: #fff;
+border: none;
+font-weight: 900;
+font-size: 30px;
+}
+
+/*=======================================
+    CHALLENGE STYLES
+==================================================*/
+section.challenge {
+    padding-top: 30px;
+}
+.challenge h2 {
+    font-size: 40px;
+}
+.img-auto {
+    /*width: 605px;*/
+    margin: 0 auto;
+   /* margin-bottom: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;*/
+}
+.img-auto-change {
+    width: 605px;
+    margin: auto;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.img-alg-auto {
+    width: 450px;
+    margin: 0 auto;
+}
+.img-f1-auto {
+    width: 635px;
+    margin: 0 auto;
+}
+.img-f2-auto {
+    width: 527px;
+    margin: 0 auto;
+}
+
+.img-f4-auto {
+    width: 527px;
+    margin: 0 auto;
+}
+@media(min-width: 1000px){
+.img-f5-auto {
+     max-width: 60%;
+}
+.img-f3-auto {
+     max-width: 80%;
+}
+.img-f4-auto {
+     max-width: 50%;
+}
+.table {
+    width: 70%;
+    margin: auto;
+}
+}
+.img-auto img {
+    /*max-width: 100%;*/
+    display: block;
+    margin: auto;
+        max-width: 100%;
+}
+
+/*=======================================
+    SERVICE STYLES
+==================================================*/
+.events {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.20);
+    /*overflow: hidden;*/
+}
+.timeline dl dd .events .events-body h6.events-heading {
+    font-weight: bolder;
+    font-size: 20px;
+    line-height: 1.1;
+    text-align: left;
+    color: inherit;
+    z-index: 99;
+    font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif!important;
+}
+.events-body p {
+    padding-bottom: 0px;
+    text-align: left;
+}
+.events-body {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.time {
+    text-shadow:#f3f3f3 1px 1px 0px, #b2b2b2 1px 2px 0
+}
+.service-div {
+	width: 100%;
+	min-height: 100px;
+	background-color: #F2F4F6;
+	box-shadow: none;
+	border: 0;
+    padding:20px;
+	-webkit-border-radius: 20px 20px 10px 10px;
+	-moz-border-radius: 20px 20px 10px 10px;
+	border-radius: 20px 20px 10px 10px;
+    margin-bottom:30px;
+}
+/*=======================================
+    CONTACT STYLES
+==================================================*/
+
+#social-icon a {
+    color:#616161!important;
+    margin-right:10px;
+}
+.contact-cls {
+    font-size:20px;
+    line-height:40px;
+}
+/*=======================================
+    FOOTER STYLES
+==================================================*/
+
+
+#footer {
+    background-color:#000;
+    color:#fff;
+    padding:20px 50px 20px 50px;
+    text-align:right;
+}

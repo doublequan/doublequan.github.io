@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--[if IE]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <![endif]-->
+    <title>Bitwise Neural Networks on FPGA: High-Speed and Low-Power</title>
+    <!--REQUIRED STYLE SHEETS-->
+    <!-- BOOTSTRAP CORE STYLE CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/bootflat.css" rel="stylesheet" />
+    <!-- FONTAWESOME STYLE CSS -->
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- VEGAS STYLE CSS -->
+    <link href="assets/scripts/vegas/jquery.vegas.min.css" rel="stylesheet" />
+    <!-- CUSTOM STYLE CSS -->
+    <link href="assets/css/style.css" rel="stylesheet" />
+    <!-- GOOGLE FONT -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <!--Header section  -->
+    <div class="container" id="home">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h1 class="head-main">Bitwise Neural Networks on FPGA</h1>
+                <h2 class="head-sub-main"> High-Speed and Low-Power</h2>
+                <h3 class="head-last"><a href="https://www.linkedin.com/in/yunfanye">Yunfan Ye</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/araina-huang-00853b96">Yayun Huang</a></h3>
+            </div>
+        </div>
+    </div>
+    <!--End Header section  -->
+    <!-- Navigation -->
+    <nav class="navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"> FBNN</a>
+            </div>
+            <!-- Collect the nav links for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse pull-right">
+                <ul class="nav navbar-nav">
+                    <li><a href="index.html">FINAL</a>
+                    </li>
+                    <li><a href="proposal.html">PROPOSAL</a>
+                    </li>
+                    <li><a href="checkpoint.html">CHECKPOINT</a>
+                    </li>
+                    <!-- <li><a href="index.html#price-sec">FINAL REPORT</a>
+                    </li> -->
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <!--End Navigation -->
+    <!--About Section-->
+    <section class="for-full-back color-light " id="about">
+        <div class="container introduction">
+            <div class="row text-center">
+                <div class="col-md-8 col-md-offset-2 ">
+                    <h1>Final</h1>
+                    <!-- <h4>
+                        <strong>
+                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                         Curabitur nec nisl odio. Mauris vehicula at nunc id posuere.
+                            </strong>
+                    </h4> -->
+                </div>
+            </div>
+            <div class="row g-pad-bottom">
+                <div class="col-md-12">
+                    <h2>Summary</h2>
+                    <p>
+                        We implemented bitwise neural networks on FPGA and run tests on the MNIST dataset. Experiments show that we achieve 4x speedup compared with the state-of-the-art FPGA implementation.
+                    </p>
+                    <h2>Background</h2>
+                    <p>Deep neural networks (DNNs) have substantially pushed the state-of the-art in a wide range of tasks, including speech recognition and computer vision. However, DNNs also require a wealth of compute resources, and thus can benefit greatly from parallelization.</p>
+                    <p>Moreover, power consumption recently has gained massive attentions due to the emerging of mobile devices. As is well known, running real-time text detection and recognition tasks on standalone devices, like a pair of glasses, will quickly drain the battery. Therefore, we need to exploit the heterogeneity of hardware to boost both performance and efficiency. </p>
+                    <p>The attempt to implement neural networks on FPGA dates back to 24 years ago [1], yet no design shows a potential of commercial use until recently [2]. However, the recent design still suffers from high resource usage and high latency. In this work, we propose a resource-efficient implementation, which also has higher throughput and lower latency.</p>
+                    <h2>Contributions</h2>
+                    <p>Neural networks only have dependency between layers, and thus it is theoretically possible to fully parallelize inside a layer. However, due to millions, or even billions, of weights, this is practically impossible due to the lack of resources. In this project, we propose a novel implementation based on the bitwise neural networks. Specifically, we reschedule the compute process and successfully reuse some hardware components, which achieves a 1024-way parallelization with only a limited amount of resources.</p>
+                    <h2>Bitwise Neural Networks</h2>
+                    <p>Kim et al. propose a resource efficient design of deep neural network [3], which replaces float multiplication with bit XNOR and float addition with bit counting. Specifically, we only need to do XNOR between inputs and weights in one layer and the output to next layer is activated if the counts of ‘1’s is greater than a threshold. By this change, the workload pattern becomes very suitable and highly parallelizable for hardware, e.g. FPGA, at the expense of only a small decrease of accuracy, from 98.9% to 98.7%.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End About Section-->
+    <!-- About Team Section -->
+    <section class="for-full-back color-white challenge" id="about-team">
+        <div class="container">
+            <div class="row introduction">
+                <div class="col-md-12">
+                    <h2>Optimizations</h2>
+                    <h3 style="text-align: center;">Reduce the number of interconnections</h3>
+                    <p>In a fully-connected neural network, the number of weights grows O(n<sup>2</sup>) with a number of nodes. Our network has 1024 nodes per hidden layer, and this is equivalent to one million interconnections in hardware, which is certainly impractical. </p>
+                    <p>Therefore, we want to reduce the number of interconnections. The intuition is that, instead of using a direct connection between node 1 and node 2 as shown in the left figure of Figure 1, we can use an indirect connection between node 1 and node 2 as in the right figure of Figure 1.</p>
+                    <div class="img-auto img-f5-auto"><img src="assets/img/12.pic.jpg"></div>
+                    <h5 style="text-align: center;">Figure 1. Interconnections can be reused if we shift the inputs to proper locations</h5>
+                    <p>Concretely, one can simply express computation process between two layers with a matrix multiplication operation. Specifically, we first rearrange the contribution of each node due to commutative property as shown in Figure 2.</p>
+                    <div class="img-auto img-f3-auto"><img src="assets/img/4.pic.jpg"></div>
+
+                    <h5 style="text-align: center;">Figure 2. Interconnections can be reused if we shift the inputs to proper locations</h5>
+                    <p>Note that in the result, the first green column is the initial input 1, 2 and 3, and the second green column is a shift of the first column. Also, the third column is a shift of the second column. Based on this updated computation order, we can obtain the final result of multiplication between a vector and an n<sup>2</sup> matrix by n iterations as shown in Figure 3.  </p>
+                    <div class="img-auto"><img src="assets/img/10.pic.jpg"></div>
+                    <h5 style="text-align: center;">Figure 3.  Neural networks can be partitioned into n<sup>2</sup> parts and each part contains only 1/n of the nodes</h5>
+                    <p>Therefore, if we rearrange the weights by diagonal, we can use shift and elementwise multiplication instead of matrix multiplication. By this means, we can reduce the interconnections from one million to two thousand for one layer, which is a 500 times saving. Also, the number of interconnections now grows only O(n) instead of O(n2) with the number of nodes, which is much more scalable.</p>
+
+                    <h3 style="text-align: center;">Matrix padding</h3>
+                    <p>Furthermore, the number of nodes in each layer is usually not the same. For example, we use a 784-1024-1024-1024-10 network. If we use different designs for different layers, it means 4 times more resources, and the resource usage for a deeper network will explode.  The idea is to pad matrices that are less than 1024 x 1024 so that all layers can reuse the same hardware module. Considering that we have inactive weights in bitwise neural networks, we can use matrix padding for free. Specifically, an enable signal will decide whether the corresponding weight will count. By this means, we significantly save the hardware resources, in our scenario, by a factor of 4. A drawback is that we potentially may need to load more weights from memory, but the resource savings are more significant. </p>
+
+                    <h3 style="text-align: center;">Batch processing</h3>
+                    <p>It turns out that the program is bandwidth bound. To amortize the cost of loading, we can use batch processing. The idea is simple that we copy-and-paste the same module several times until we reach the resource limits. Each module shares the same set of weights from the memory, and therefore the loading cost is amortized.</p>
+
+                    <h3 style="text-align: center;">Implementation</h3>
+                    <p>Combining all ideas shown above, the final implementation is illustrated in Figure 4. It accepts binary inputs and gives binary outputs. It also contains XNOR module, enable signal, and bit counter. The activation, which is essentially a comparator, decides whether to activate the output based on the number of ‘1’s.</p>
+                    <div class="img-auto img-f4-auto"><img src="assets/img/11.pic.jpg"></div>
+                    <h5 style="text-align: center;">Figure 4. The hardware implementation of shift and multiplication idea</h5>
+
+                    <h2>Evaluation</h2>
+                    <p>For evaluation, we target on the digit classification task using the MNIST dataset and all the following experiments are based on the Altera DE2-115 board. The board has 114,480 logic cells, 50 MHz clock and 2 MB SRAM. </p>
+                    <p>In this section, we compare our design with the state-of-the-art approach, and we find that our approach greatly outperforms the state-of-the-art. Note that all measurements are converted to be resource-neural as the related paper tests on a much better FPGA than ours.</p>
+                    <p>As shown in Figure 5, we speed up the classification phase by 1024x using our parallel algorithm. Compared with the cycles needed for loading weights, it is almost negligible. Then, we further use batch processing schemes to amortize the cost of loading, which reduces the loading cost by three times as we are able to use three modules in our hardware. </p>
+                    <div class="img-auto img-f5-auto"><img src="assets/img/f1.jpg"></div>
+                    <h5 style="text-align: center;">Figure 5. The cycles needed for computing drop by a factor of 1024 and the loading cost can be amortized using batch processing</h5>
+                    <p>For comparison, we compare our paper with an existing paper that also implements FPGA to classify MNIST dataset. After compensating for the difference in the board, i.e. consider cycles rather than absolute time, our design achieve 4x throughput than [2].  Note that the throughput is normalized by the number of gates, i.e. they use over 210,000 logic cells, while we only use 33,000. Because we can always use batch processing to increase throughput if resources permit. Moreover, our design has a 60 times lower latency than [2], as they use a batch size of 100 to exchange latency for throughput. The real power measurement of [2] is 1 mJ per image, and the Altera power estimator shows our design consumes 0.56 mJ per image. Considering the possibility of under-estimating, the energy consumption could be very similar in the real world. A full comparison is shown in Figure 6.</p>
+                    <div class="img-auto img-f5-auto"><img src="assets/img/3.pic.jpg"></div>
+                    <h5 style="text-align: center;">Figure 6. Comparison of performance between our design and baseline FPGA paper</h5>
+                    <p>In the second part, we will compare our results with the open source tensorflow design running on a single-threaded CPU, as shown in Figure 7.</p>
+                    <div class="img-auto img-f5-auto"><img src="assets/img/2.pic.jpg"></div>
+                    <h5 style="text-align: center;">Figure 7. Comparison of performance between our design and tensorflow on CPU</h5>
+                    <p>The CPU has 2.40GHz clock, while our board only has a 50 MHz clock. However, our throughput is very similar to the CPU throughput. Moreover, assuming that the CPU is loaded when executing digit recognition tasks, it will consume 127.1 Watt. Our board consumes 0.16 Watt. Therefore, our energy efficiency is 800 times better than the CPU design.
+                    </p>
+                    <h2>Conclusions</h2>
+                    <p>FPGA implementation of neural networks benefit from higher parallelism, lower energy consumptions and no jitters. Our novel implementation of neural networks have a significant gain over the state-of-the-arts. Also, our design shows the potential of commercial use in more complex tasks.</p>
+                    <h2>Acknowledgments</h3>
+                    <p>Thanks to 418 staffs for designing this wonderful project and bringing us to this interesting topic, especially Karima for proposing the initial idea. Also, thank Prof. Bill Nace for providing us with the hardware resources.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End About Team Section -->
+    <!-- Pricing Section -->
+    <section class="for-full-back color-light" id="price-sec">
+        <div class="container">
+            <div class="row introduction">
+                <div class="col-md-12">
+                    <h2>References</h2>
+                    <ul>
+                        <li id="ref1">[1] Cox, C.E. and E. Blanz, GangLion - a fast field Programmable gate array implementation of a connectionist classifier. IEEE Journal of Solid-State Circuits, 1992. 28(3): p. 288-299.</li>
+                        <li id="ref2">[2] Jinhwan Park, Wonyong Sung. Fpga Based Implementation of Deep Neural Networks Using On-chip Memory Only. arXiv preprint arXiv:1602.01616, 2016.</li>
+                        <!-- <li id="ref3">[3] Ravi Mullapudi. <a href="https://github.com/ravi-teja-mullapudi/Halide-NN">https://github.com/ravi-teja-mullapudi/Halide-NN.</a> Accessed April 1st.</li> -->
+                        <li id="ref3">[3] Minje Kim, and Paris Smaragdis. Bitwise Neural Networks. arXiv preprint arXiv:1601.06071v1, 2016</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="for-full-back color-white">
+        <div class="container">
+            <div class="row introduction">
+                <div class="col-md-12">
+                    <h3>Appendix I - Work Division</h3>
+                    <p>Equal work was performed by both project members.</p>
+                    <h3>Appendix II - Personal Challenges</h3>
+                    <p>First, our implementation is based on a short paper from Kim et al. and we do not have any code available. Also, the paper does not record detailed information. Thus, we have to a lot of other papers and try a bunch of settings to reproduce the results. </p>
+                    <p>Second, as non-ECE students, we did experience a hard time finding proper FPGA boards. Even after securing a board, we still encounter a lot of unexpected issues as we are non-ECE students. Due to the hardware problem, we have to make more backup plans, which brings troubles, but also help to shape our thoughts.</p>
+                    <p>Third, as mentioned above, neural networks only have dependency between layers. Therefore, the first attempt tries to fully parallelize the entire layer by turning all weights to logical gates. Certainly, it is currently impossible to find one FPGA with at least 1024x1024 logic cells to store weights. Thus, we switched to our final design.</p>
+                    <p>Along the way, we learn a wealth of new concepts and consistently change our plan according to the resources. In addition to the people mentioned in a previous section, we also sincerely thank everyone who have offered help or information, Kim, Darrin, etc.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--footer Section -->
+    <div class="for-full-back " id="footer">
+        2016 arainhyy.github.io | All Right Reserved
+    </div>
+    <!--End footer Section -->
+    <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY  -->
+    <script src="assets/plugins/jquery-1.10.2.js"></script>
+    <!-- BOOTSTRAP CORE SCRIPT   -->
+    <script src="assets/plugins/bootstrap.js"></script>
+    <!-- VEGAS SLIDESHOW SCRIPTS -->
+    <script src="assets/plugins/vegas/jquery.vegas.min.js"></script>
+    <!-- CUSTOM SCRIPTS -->
+    <script src="assets/js/custom.js"></script>
+</body>
+
+</html>

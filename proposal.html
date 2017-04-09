@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--[if IE]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <![endif]-->
+    <title>Bitwise Neural Networks on FPGA: High-Speed and Low-Power</title>
+    <!--REQUIRED STYLE SHEETS-->
+    <!-- BOOTSTRAP CORE STYLE CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/bootflat.css" rel="stylesheet" />
+    <!-- FONTAWESOME STYLE CSS -->
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- VEGAS STYLE CSS -->
+    <link href="assets/scripts/vegas/jquery.vegas.min.css" rel="stylesheet" />
+    <!-- CUSTOM STYLE CSS -->
+    <link href="assets/css/style.css" rel="stylesheet" />
+    <!-- GOOGLE FONT -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <!--Header section  -->
+    <div class="container" id="home">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h1 class="head-main">Bitwise Neural Networks on FPGA</h1>
+                <h2 class="head-sub-main"> High-Speed and Low-Power</h2>
+                <h3 class="head-last"><a href="https://www.linkedin.com/in/yunfanye">Yunfan Ye</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.linkedin.com/in/araina-huang-00853b96">Yayun Huang</a></h3>
+            </div>
+        </div>
+    </div>
+    <!--End Header section  -->
+    <!-- Navigation -->
+    <nav class="navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"> FBNN</a>
+            </div>
+            <!-- Collect the nav links for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse pull-right">
+                <ul class="nav navbar-nav">
+                    <li><a href="index.html">FINAL</a>
+                    </li>
+                    <li><a href="proposal.html">PROPOSAL</a>
+                    </li>
+                    <li><a href="checkpoint.html">CHECKPOINT</a>
+                    </li>
+                    <!-- <li><a href="index.html#price-sec">FINAL REPORT</a>
+                    </li> -->
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <!--End Navigation -->
+    <!--About Section-->
+    <section class="for-full-back color-white " id="about">
+        <div class="container introduction">
+            <div class="row text-center">
+                <div class="col-md-8 col-md-offset-2 ">
+                    <h1>Proposal</h1>
+                    <!-- <h4>
+                        <strong>
+                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                         Curabitur nec nisl odio. Mauris vehicula at nunc id posuere.
+                            </strong>
+                    </h4> -->
+                </div>
+            </div>
+            <div class="row g-pad-bottom">
+                <div class="col-md-12">
+                    <h2>Summary</h2>
+                    <p>
+                        We implemented bitwise neural networks on FPGA and run tests on the MNIST dataset. Experiments show that we achieve 4x speed compared with the state-of-the-art FPGA implementation.
+                    </p>
+                    <h2>Background</h2>
+                    <p>Deep neural networks (DNNs) have substantially pushed the state-of the-art in a wide range of tasks, including speech recognition and computer vision. However, DNNs also require a wealth of compute resources, and thus can benefit greatly from parallelization.</p>
+                    <p>Moreover, power consumption recently has gained massive attentions due to the emerging of mobile devices. As is well known, running real-time text detection and recognition tasks on standalone devices, like a pair of glasses, will quickly drain the battery. Therefore, we need to exploit the heterogeneity of hardware to boost both performance and efficiency. </p>
+                    <p>The attempt to implement neural networks on FPGA dates back to 24 years ago [1], yet no design shows a potential of commercial use until recently [2]. However, the recent design still suffers from high resource usage and high latency. In this work, we propose a resource-efficient implementation, which also has higher throughput and lower latency.</p>
+                    <h2>Platform</h2>
+                    <p>The bitwise neural networks (BNNs) can further drive down the power consumptions by eliminating power-consuming operations like multiplication<a href="#ref1"> [1]</a>. Hence, we expect that a well-implemented BNN on heterogeneous hardware can enable a real-time and always-on service. Specifically, a field-programmable gate array (FPGA) is a reconfigurable hardware and is particularly suitable for fast bit operations, and thus we will first try to port the algorithm on FPGA.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End About Section-->
+    <!-- About Team Section -->
+    <section class="for-full-back color-light challenge" id="about-team">
+        <div class="container">
+            <div class="row introduction">
+                <div class="col-md-12">
+                    <h2 class="text-center">Challenge</h2>
+                    <div class="img-auto-change"><img src="assets/img/4.jpg"></div>
+                    <ul>
+                        <li>Neural networks normally update the weights using back-propagation. Thus, dependencies exist between layers and we need to design proper work assignments inside a layer.</li>
+                        <li>Neural networks consist of a massive amount of weights, and the training process involves a lot of iterations. Thus, data locality should be of central concern. </li>
+                        <!-- <li>Halide currently cannot directly compile on FPGA. There is ongoing research<a href="#ref2"> [2]</a>, but the results may not be readily available. If this approach finally proves to be unfeasible, we may try to target on other low power devices, like ARM.</li> -->
+                        <li>BNNs anticipate binary inputs, and thus we need to preprocess the raw image, also in parallel.</li>
+                        <li>We need to devise a good pipelining strategy to maximize the throughput.</li>
+                    </ul>
+                    <h2 class="text-center">Resources</h2>
+                    <ul>
+                        <li>Codebase</br>
+                            To the best of our knowledge, there is no readily available code for BNNs. Therefore, we may start from the algorithm described in the paper<a href="#ref1"> [1]</a>.</li>
+                        <li>High-performance Hardware</br>
+                            The training phase of the neural networks require very powerful compute resources, and thus we can exploit the latedays machines.</li>
+                        <li>Reconfigurable Hardware</br>
+                            BNNs can greatly benefit from hardware acceleration. Ideally, we can implement the classifying phase on reconfigurable hardware, like FPGA.</li>
+                        <!-- <li>Related work</br>
+                            We may borrow ideas from open-source halide implementation of neural networks<a href="#ref3"> [3]</a>.
+                        </li> -->
+                    </ul>
+                    <h2 class="text-center">Deliverables</h2>
+                    <ul>
+                        <li>(Completed) Baseline implementation
+                            <br> Since there is no readily available codebase, we will try to implement a baseline algorithm in open-source frameworks, like caffe, torch or tensorflow.</li>
+                        <li>(Completed) Evaluation
+                            <br> Evaluation. We will evaluate our implementation by comparing our runtime to the baseline. </li>
+                        <li>Hardware demo
+                            <br> Hardware demo. Hopefully, we can deliver a hardware demo on FPGA. The ideal demo would be of three parts: a camera used to generate inputs, a segment display used to display the results, and FPGA.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End About Team Section -->
+    <!-- Pricing Section -->
+    <section class="for-full-back color-light schedule" id="price-sec">
+        <div class="container">
+            <div class="row text-center">
+                <h2 class="text-center">Schedule</h2>
+                <!--TimeLine
+      ================================================== -->
+                <div class="col-md-12">
+                    <div class="timeline">
+                        <dl>
+                            <dt>Apr 2016</dt>
+                            <dd class="pos-right clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Apr 9</h6>
+                                        <p>(Completed) Get familiar with training bitwise neural networks and implement a correct baseline algorithm.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dd class="pos-left clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Apr 16</h6>
+                                        <p>(Completed) Tune parameters and implement retrain process to approach the results of the paper.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dd class="pos-right clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Apr 23</h6>
+                                        <p>(Completed) Implement classifying phase by VHDL.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dd class="pos-left clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> Apr 29</h6>
+                                        <p>(Completed) Prepare for final exam and analyze the feasibility of porting the code to hardware.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dt>May 2016</dt>
+                            <dd class="pos-right clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> May 6</h6>
+                                        <p>(Completed) Port the code to hardware and analyze the results.<a href="#ref3"> [3]</a>.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dd class="pos-left clearfix">
+                                <div class="circ"></div>
+                                <div class="events">
+                                    <div class="events-body">
+                                        <h6 class="events-heading"> <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span> May 8</h6>
+                                        <p>(Completed) Write final report and prepare for competition.</p>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End Pricing Section -->
+    <section class="for-full-back color-white challenge" id="about-team">
+        <div class="container">
+            <div class="row introduction">
+                <div class="col-md-12">
+                    <h2 class="text-center">Reference</h2>
+                    <ul>
+                        <li id="ref1">[1] Minje Kim, and Paris Smaragdis. Bitwise Neural Networks. arXiv preprint arXiv:1601.06071v1, 2016</li>
+                        <li id="ref2">[2] Stuart Byma. <a href="http://wiki.epfl.ch/edicpublic/documents/Candidacy%20exam/PR15byma_edic_proposal.pdf">Programming Datacenter-Scale Reconfigurable Systems.</a> Accessed April 1st.</li>
+                        <!-- <li id="ref3">[3] Ravi Mullapudi. <a href="https://github.com/ravi-teja-mullapudi/Halide-NN">https://github.com/ravi-teja-mullapudi/Halide-NN.</a> Accessed April 1st.</li> -->
+                        <li id="ref3">[3] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep Residual Learning for Image Recognition. arXiv preprint arXiv:1512.03385v1, 2015</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--footer Section -->
+    <div class="for-full-back " id="footer">
+        2016 arainhyy.github.io | All Right Reserved
+    </div>
+    <!--End footer Section -->
+    <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY  -->
+    <script src="assets/plugins/jquery-1.10.2.js"></script>
+    <!-- BOOTSTRAP CORE SCRIPT   -->
+    <script src="assets/plugins/bootstrap.js"></script>
+    <!-- VEGAS SLIDESHOW SCRIPTS -->
+    <script src="assets/plugins/vegas/jquery.vegas.min.js"></script>
+    <!-- CUSTOM SCRIPTS -->
+    <script src="assets/js/custom.js"></script>
+</body>
+
+</html>

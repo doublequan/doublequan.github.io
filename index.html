@@ -65,13 +65,13 @@
         <!-- Collect the nav links for toggling -->
         <div class="collapse navbar-collapse navbar-ex1-collapse pull-right">
             <ul class="nav navbar-nav">
-                <li><a href="index.html">CStore</a>
+                <li><a href="proposal.html">Proposal</a>
                 </li>
                 <!--<li><a href="proposal.html">PROPOSAL</a>-->
                 <!--</li>-->
                 <!--<li><a href="checkpoint.html">CHECKPOINT</a>-->
                 <!--</li>-->
-                <li><a href="final.html">FINAL REPORT</a>
+                <li><a href="index.html">FINAL REPORT DRAFT</a>
                 </li>
             </ul>
         </div>
@@ -85,7 +85,7 @@
     <div class="container introduction">
         <div class="row text-center">
             <div class="col-md-8 col-md-offset-2 ">
-                <h1>Proposal</h1>
+                <h1>Final Report Draft</h1>
                 <!-- <h4>
                     <strong>
                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -98,23 +98,29 @@
             <div class="col-md-12">
                 <h2>Summary</h2>
                 <p>
-                    This project will focus on building a columnar in-memory data store based on lock-free ordered data
-                    structure (skiplist, red-black tree, etc.). It will provide Get, Put, Scan and Delete operations, as
-                    well as parallel filtering for Put, Scan and Delete using multi-core and SIMD instructions. We
-                    expect to see great speedup comparing to C++11 std::map on the AWS EC2 instances.
+                    In this project we implemented a lock-free skiplist which supports insert, delete and find.
+                    It is different from traditional lock-free skiplist in a way that we divide the skiplist into the
+                    index layer and storage layer, and apply SIMD to speed up the lookup process.
                 </p>
-                <h2>Background</h2>
-                <p>For simple key-value store, if implemented with hash, it does not support iterators, or scans,
-                    because hashmaps can not maintain the order of the key. But for some use cases, supporting scan is
-                    crucial, as well as result filtering. In these cases, users tend to use columnar data stores. This
-                    requires us to use some ordered data structure to store the data, such as skiplist and red-black
-                    tree. Since the data store is supposed to be used in multi-thread use cases, we have to explore
-                    their corresponding lock free solutions in order to get maximum speedup. Also, we expect to make
-                    use of SIMD instructions and multi-core processing to speedup the scan and filtering.</p>
-                <p>At the same time, for disk-based data stores, exploring storage-hierarchy is very crucial, and
-                    affects the performance greatly. For simplicity we will only explore the in memory data store so we
-                    can fully examine the speedup brought by lock free data structures and parallel instructions.</p>
 
+                <img src="assets/img/F1.jpeg" alt="">
+
+                <p>Above is a representation of the architecture of our skiplist. In the index layer, we group multiple
+                    indexes of a node together in one index node, so we can make use of cache locality and use SIMD
+                    comparison to get the routing decision in one run. The index layer will not change until some upper
+                    limit of the number of inserts and deletes are triggered, in which case we will build a new index layer to replace the old one. In the storage layer, we only have an ordered singly-linked lock-free skiplist.
+                </p>
+                <h2>Challenges</h2>
+                <p>1. In order to hava a good perfermance, we need to build a lockfree sorted linkedlist act as the storage layer. We referred to Harris’s solution[1] of a lockfree sorted linkedlist: utilize CAS and a special mark on node’s next address to implement the lockfree insert and lockfree deletion. The last digit of the next pointer is used to mark the node is logical deleted. However, this is not enough in our case. Beside the storage layer, we still have index layer which holds the pointers to the nodes in storage layer. If we physically delete the node after a node is marked logical deleted as described in the paper[1], this will cause unsafe operations. To address this, we introduced another flag which we called it confirm_delete flag. This flag placed on the second last digit of a node’s next pointer. The confirm_delete flag will only be set while rebuilding the new index layer. And after a node is marked as confirm_delete, it will be physically deleted in later operations.
+                </p>
+                <p>2. For the index layer, because we are grouping multiple indexes on the same level to one single index node, this makes modifying it without using locks to be very hard. This leads us to believe it is better to only build a new index layer and replace the old one at some interval. Although it may hurts the performance a little bit when inserts and deletes are a majority, it saves us the difficulty to build a lock-free index layer (because simply adding a lock or moving data in memory may hurt the performance even further).
+                </p>
+                <p>3. The index layer rebuilding mechanism introduces a new problem: when shall we delete the old index layer? Because we do not have a way to confirm whether any ongoing query is searching through the index layer. If we are not careful, these queries will throw segmentation faults. To handle this problem, we added a global atomic counter and a per-index-layer atomic counter. As soon as any of the find(), insert() or delete() is entered/leaved, global counter will self-increment/decrement. After the global counter increment, we will save a copy of the pointer to the current index layer and increment that index layer’s counter, and after we are done we decrement it. The pseudo code looks like this:
+                </p>
+                <img src="assets/img/F2.jpeg" alt="">
+
+                <p>Then in a backend process, we detect if global_counter is equal to the sum of the counter in both the old and new index layers. If it is, then this means no ongoing query is stuck between getting a local copy of the index layer and do something from the index layer, we only need to wait until old index layer’s counter is equal to 0. Then we can safely delete the old index layer. In our testing, atomic integers are very efficient if not highly contended, so it should not hurt the performance much.
+                </p>
             </div>
         </div>
     </div>
@@ -125,138 +131,36 @@
     <div class="container">
         <div class="row introduction">
             <div class="col-md-12">
-                <h2 class="text-center">Challenge</h2>
-                <!--<div class="img-auto-change"><img src="assets/img/4.jpg"></div>-->
-                <ul>
+                <h2 class="text-center">Results</h2>
 
-                    <li>The first is to implement a performant lock-free ordered data structure. Skiplist is easy to
-                        implement, however it has terrible worst case performance, and the pointers bring too many
-                        redundant data; red-black trees have good performance at any time and is space efficient,
-                        however it is hard to implement. We need to do experiment and make decision on which one to
-                        choose.
-                    </li>
-                    <li>The second is to create a columnar data store that supports SIMD and multi-core processing for
-                        scans and filters. To the best of our knowledge no teams have ever done this in previous
-                        semesters. The design and implementation would contain much uncertainty. We will try to make
-                        use of the open source implementations like HBase to help our design and implementation.                    </li>
-                </ul>
-                <h2 class="text-center">Resources</h2>
                 <p>
-                    We don’t have a code base. We plan to use the GHC/lateday cluster and AWS EC2 instances for
-                    testing and profiling.
-                    <!-- <li>Related work</br>
-                        We may borrow ideas from open-source halide implementation of neural networks<a href="#ref3"> [3]</a>.
-                    </li> -->
+                    Until now we still have some bugs in our insert and delete part, but we are confident to fix them and begin profiling tonight. For read-only scenario, we have the following result compared to std::map (red-black tree, not thread-safe) and normal skiplist (not thread-safe):
                 </p>
-                <h2 class="text-center">Platform</h2>
-                <p>
-                    We will use C++ to build this project. We will first try to get our solution correct on GHC/lateday
-                    machine with the Intel Xeon Phi processors. If the machines have unstable performance because of too
-                    many are using it, we would want to use the AWS EC2 instances because we can have dedicated memory
-                    and CPU for speedup testing. We are planning to use m4.large instance with Intel Xeon Broadwell
-                    processors or Intel Xeon Haswell processors, but this could change later.
-                </p>
-                <h2 class="text-center">Deliverables</h2>
-                What we plan to implement:
-                <ul>
-                    <li>A simple ordered key value store based on lock-free skiplist/red-black tree.
-                    </li>
-                    <li>Columnar data store based on this key value store that supports Get, Delete, Put and Filter Scan
-                    </li>
-                    <li>Coarse grained parallel implementation of scan and filter
-                    </li>
-                    <li>Fine grained parallel implementation of scan and filter
-                    </li>
-                </ul>
-                What we hope to implement:
-                <ul>
-                    <li>Finely tune both the performance and space utilization
-                    </li>
-                    <li>Build a distributed version of this columnar data store                    </li>
-                </ul>
 
-                <h2 class="text-center">Performance Goals</h2>
+                <img src="assets/img/F3.jpeg" alt="">
+
+                <br>
+                <br>
+
+                <img src="assets/img/F4.jpeg" alt="">
+
+
                 <p>
-                    Achieve 10x speedup for scan performance comparing to std::map.
+                    We can see from the benchmark that if not adding lock to the std::map(), it generally is 2~3 times faster than our implementation. Because we are making use of data locality and SIMD comparison, we are far faster than sequential skiplist even the latter is not using a lock. We expect our solution to be faster than std::map with a lock.
+
                 </p>
+
+                <h2 class="text-center">What we hope to achieve on Friday</h2>
+                <p>
+                    We hope to benchmark the performance under different workload (mix of insert, delete and find) and see a good speedup from std::map with a lock under read-heavy scenario.
+                </p>
+
             </div>
         </div>
     </div>
 </section>
 <!--End About Team Section -->
 <!-- Pricing Section -->
-<section class="for-full-back color-light schedule" id="price-sec">
-    <div class="container">
-        <div class="row text-center">
-            <h2 class="text-center">Schedule</h2>
-            <!--TimeLine
-  ================================================== -->
-            <div class="col-md-12">
-                <div class="timeline">
-                    <dl>
-                        <dt>Apr 2017</dt>
-                        <dd class="pos-right clearfix">
-                            <div class="circ"></div>
-                            <div class="events">
-                                <div class="events-body">
-                                    <h6 class="events-heading"><span class="glyphicon glyphicon-pushpin"
-                                                                     aria-hidden="true"></span> Apr 17</h6>
-                                    <p>Implement non-lock-free skilplist/red-black tree and implement the key value
-                                        store and columnar data store</p>
-                                </div>
-                            </div>
-                        </dd>
-                        <dd class="pos-left clearfix">
-                            <div class="circ"></div>
-                            <div class="events">
-                                <div class="events-body">
-                                    <h6 class="events-heading"><span class="glyphicon glyphicon-pushpin"
-                                                                     aria-hidden="true"></span> Apr 24</h6>
-                                    <p>Implement lock-free skiplist/red-black tree and fine grained colmnar data store
-                                    </p>
-                                </div>
-                            </div>
-                        </dd>
-                        <dt>May 2016</dt>
-
-                        <dd class="pos-right clearfix">
-                            <div class="circ"></div>
-                            <div class="events">
-                                <div class="events-body">
-                                    <h6 class="events-heading"><span class="glyphicon glyphicon-pushpin"
-                                                                     aria-hidden="true"></span> May 1</h6>
-                                    <p>Implement the SIMD and multi-core parallel scans and filters
-                                    </p>
-                                </div>
-                            </div>
-                        </dd>
-                        <dd class="pos-left clearfix">
-                            <div class="circ"></div>
-                            <div class="events">
-                                <div class="events-body">
-                                    <h6 class="events-heading"><span class="glyphicon glyphicon-pushpin"
-                                                                     aria-hidden="true"></span> May 8</h6>
-                                    <p>Bug fix, further tuning and profiling</p>
-                                </div>
-                            </div>
-                        </dd>
-                        <dd class="pos-right clearfix">
-                            <div class="circ"></div>
-                            <div class="events">
-                                <div class="events-body">
-                                    <h6 class="events-heading"><span class="glyphicon glyphicon-pushpin"
-                                                                     aria-hidden="true"></span> May 11</h6>
-                                    <p>Prepare the final presentation</p>
-                                </div>
-                            </div>
-                        </dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!--End Pricing Section -->
 
 <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
 <!-- CORE JQUERY  -->

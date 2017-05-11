@@ -103,24 +103,51 @@
                     index layer and storage layer, and apply SIMD to speed up the lookup process.
                 </p>
 
-                <img src="assets/img/F1.jpeg" alt="">
+                <center>
+                    <img src="assets/img/F1.jpeg" alt="">
+                    <br>
+                    <b><big>Figure 1. Architecture of our SIMD skiplist</big></b>
+                </center>
 
                 <p>Above is a representation of the architecture of our skiplist. In the index layer, we group multiple
                     indexes of a node together in one index node, so we can make use of cache locality and use SIMD
                     comparison to get the routing decision in one run. The index layer will not change until some upper
-                    limit of the number of inserts and deletes are triggered, in which case we will build a new index layer to replace the old one. In the storage layer, we only have an ordered singly-linked lock-free skiplist.
+                    limit of the number of inserts and deletes are triggered, in which case we will build a new index
+                    layer to replace the old one. In the storage layer, we only have an ordered singly-linked lock-free
+                    skiplist.
                 </p>
                 <h2>Challenges</h2>
-                <p>1. In order to hava a good perfermance, we need to build a lockfree sorted linkedlist act as the storage layer. We referred to Harris’s solution[1] of a lockfree sorted linkedlist: utilize CAS and a special mark on node’s next address to implement the lockfree insert and lockfree deletion. The last digit of the next pointer is used to mark the node is logical deleted. However, this is not enough in our case. Beside the storage layer, we still have index layer which holds the pointers to the nodes in storage layer. If we physically delete the node after a node is marked logical deleted as described in the paper[1], this will cause unsafe operations. To address this, we introduced another flag which we called it confirm_delete flag. This flag placed on the second last digit of a node’s next pointer. The confirm_delete flag will only be set while rebuilding the new index layer. And after a node is marked as confirm_delete, it will be physically deleted in later operations.
+                <p><b><big>1. Refined lock-free skiplist.</big></b> In order to hava a good perfermance, we need to
+                    build a lockfree sorted linkedlist to act as the storage layer. We referred to Harris’s solution[1]
+                    of a lockfree sorted linkedlist: utilize CAS and a special mark on node’s next address to implement
+                    the lockfree insert and lockfree deletion. The last digit of the next pointer is used to mark the
+                    node is logical deleted. However, this is not enough in our case. Beside the storage layer, we still
+                    have index layer which holds the pointers to the nodes in storage layer. If we physically delete the
+                    node after a node is marked logical deleted as described in the paper[1], this will lead to
+                    segmentation faults if the freed node is accessed. To address this, we introduced another flag which
+                    we called it confirm_delete flag. This flag placed on the second last digit of a node’s next
+                    pointer. The confirm_delete flag will only be set while rebuilding the new index layer. And after a
+                    node is marked as confirm_delete, it will be physically deleted in later operations. </p>
+                <p><b><big>2. Group indexes together for SIMD and better data locality.</big></b> One of the most
+                    significant deficiency of skiplist is that it has poor data locality because the skip lists are
+                    basically linked lists, and linked list nodes are scattered across the memory and have poor data
+                    locality. To resolve this problem, we group multiple indexes together into a single index node, so
+                    that we can use SIMD compares to get the routing result quicker, and make better use of data
+                    locality since these indexes are in the same node. When building the index layer we pre-calculate
+                    the routing table for each index node, so at each index node once we get the comparison result, we
+                    know which node to go to.
                 </p>
-                <p>2. For the index layer, because we are grouping multiple indexes on the same level to one single index node, this makes modifying it without using locks to be very hard. This leads us to believe it is better to only build a new index layer and replace the old one at some interval. Although it may hurts the performance a little bit when inserts and deletes are a majority, it saves us the difficulty to build a lock-free index layer (because simply adding a lock or moving data in memory may hurt the performance even further).
-                </p>
-                <p>3. The index layer rebuilding mechanism introduces a new problem: when shall we delete the old index layer? Because we do not have a way to confirm whether any ongoing query is searching through the index layer. If we are not careful, these queries will throw segmentation faults. To handle this problem, we added a global atomic counter and a per-index-layer atomic counter. As soon as any of the find(), insert() or delete() is entered/leaved, global counter will self-increment/decrement. After the global counter increment, we will save a copy of the pointer to the current index layer and increment that index layer’s counter, and after we are done we decrement it. The pseudo code looks like this:
-                </p>
-                <img src="assets/img/F2.jpeg" alt="">
+                <p><b><big>3. Rebuild index layer, and does not disturb serving the requests.</big></b> For the index
+                    layer, because we are grouping multiple indexes on the same level to one single index node, this
+                    makes
+                    modifying it without using locks and frequent memory movement to be very hard. This leads us to
+                    believe it is better to only build a new index layer and replace the old one at some interval.
+                    Although it may hurt the performance a little bit, it saves us the difficulty to build a lock-free
+                    index layer (because simply adding a lock or moving data in memory may hurt the performance even
+                    further). Also, to ensure performance during the new index layer building stage, our skiplist will
+                    not deny queries and will continue to use the old index layer to serve the requests. Once the new
+                    index layer is built, it will replace the old index layer immediately.</p>
 
-                <p>Then in a backend process, we detect if global_counter is equal to the sum of the counter in both the old and new index layers. If it is, then this means no ongoing query is stuck between getting a local copy of the index layer and do something from the index layer, we only need to wait until old index layer’s counter is equal to 0. Then we can safely delete the old index layer. In our testing, atomic integers are very efficient if not highly contended, so it should not hurt the performance much.
-                </p>
             </div>
         </div>
     </div>
@@ -133,26 +160,150 @@
             <div class="col-md-12">
                 <h2 class="text-center">Results</h2>
 
-                <p>
-                    Until now we still have minor bugs in our deletion part, but we are confident to fix them and begin profiling tonight. For read-only scenario, we have the following result compared to std::map (red-black tree, not thread-safe) and normal skiplist (not thread-safe):
-                </p>
-
-                <img src="assets/img/F3.jpeg" alt="">
-
-                <br>
-                <br>
-
-                <img src="assets/img/F4.jpeg" alt="">
-
+                <h4>1. Benchmark on CStore with SIMD On/Off</h4>
 
                 <p>
-                    We can see from the benchmark that if not adding lock to the std::map(), it generally is 2~3 times faster than our implementation. Because we are making use of data locality and SIMD comparison, we are far faster than sequential skiplist even the latter is not using a lock. We expect our solution to be faster than std::map with a lock.
-
+                    Here is the comparison of CStore’s performance with SIMD on and off with different thread numbers in
+                    read-only scenario:
                 </p>
+
+                <center>
+                    <img src="assets/img/fr1.jpeg" alt="">
+                    <br>
+                    <b><big>Table 2. Read-only Performance with ISPC On/Off</big></b>
+
+                    <br>
+                    <br>
+
+                    <img src="assets/img/fr2.jpeg" alt="">
+                    <br>
+                    <b><big>Figure 2. Read-only Performance with ISPC On/Off</big></b>
+                </center>
+
+                <p>
+                    We can see that with SIMD on, CStore’s performance perfectly grows with the number of threads. On
+                    the other hands, with SIMD off, we have to compare the indexes one by one, so the performance is
+                    significantly worse and is around 8 ~ 10 times slower than the implementation with SIMD on.
+                </p>
+
+                <center>
+                    <img src="assets/img/fr3.png" alt="">
+                    <br>
+                    <b><big>Table 3. Mix Request Performance with ISPC On/Off</big></b>
+                    <br>
+                    (20% read, 60% write, 20% delete)
+
+                    <br>
+                    <br>
+
+                    <img src="assets/img/fr4.jpeg" alt="">
+                    <br>
+                    <b><big>Figure 3. Mix Request Performance with ISPC On/Off</big></b>
+                </center>
+
+                <p>In the mix request scenario, the performance is similar. With SIMD on, the best performance is
+                    slightly worse because of backoff from CAS operation failure in multi-threading scenario. With more
+                    threads on, the performance gets even worse because of high contention.
+                </p>
+
+
+                <h4>2. Benchmark on CStore and Other O(logN) Lookup Data Structures</h4>
+
+                <center>
+                    <img src="assets/img/F3.jpeg" alt="">
+                    <br>
+                    <b><big>Table 4. Read-only Performance Between CStore, std map, Sequential Skiplist</big></b>
+
+                    <br>
+                    <br>
+
+                    <img src="assets/img/F4.jpeg" alt="">
+                    <br>
+                    <b><big>Figure 4. Read-only Performance Between CStore, std map, Sequential Skiplist</big></b>
+                </center>
+
+                <p>
+                    This is the performance comparison with std::map and normal sequential skiplist in read-only
+                    situations, and these numbers show that CStore is about 2 times slower than std::map. This is
+                    mostly because skiplist is based on probability model and if the index is not built perfectly,
+                    it is expected to have worse performance than tree-based ordered data structure. However,
+                    because of the speedup brought by SIMD and data locality, we are able to be about 8 ~ 10 times
+                    faster than normal skiplists implemented by ourselves.
+                </p>
+
+                <p>MIX Request (Comparison with std::map(), locked by boost::shared_lock() and unique_lock())
+                    with 60% read, 30% write, 10% delete, thread no.=16, tasks=3200000
+                </p>
+
+                <center>
+                    <img src="assets/img/fr5.png" alt="">
+                    <br>
+                    <b><big>Table 5. Mix Requests Performance Between CStore and std map</big></b>
+
+                    <br>
+                    <br>
+
+                    <img src="assets/img/fr6.jpeg" alt="">
+                    <br>
+                    <b><big>Figure 5. Mix Requests Performance Between CStore and std map</big></b>
+                </center>
+
+                <p>However, std::map is not thread-safe, and it is very hard to build lock-free red-black trees. For mix
+                    reads we try to wrap the read and write operations of std::map with read-write lock from boost, in
+                    this case CStore is about 30~40 times more performant than std::map.
+                </p>
+
+                <h4>3. Benchmark on CStore and Other Implementation of Lockfree Skiplist</h4>
+
+                <p>
+                    Now we want to compete with non-SIMD lock-free skiplists. We found this finely written lock-free
+                    skiplist from the Internet and we use this as the competitor.
+                </p>
+
+                <center>
+                    <img src="assets/img/fr7.png" alt="">
+                    <br>
+                    <b><big>Table 6. Read-only Performance Between CStore and Lock-free Skiplist</big></b>
+                    <br>
+                    (Thread Num 32, Total Tasks = 32,000,000)
+
+                    <br>
+                    <br>
+
+                    <img src="assets/img/fr8.jpeg" alt="">
+                    <br>
+                    <b><big>Figure 6. Read-only Performance Between CStore and Lock-free Skiplist</big></b>
+                </center>
+
+                <p>In read-only scenario, we are generally 2 times faster than the lock-free implementation. We believe
+                    we again benefit from the SIMD and data locality.</p>
+
+<p>Mix Benchmark with
+    Thread Num 32
+    20 % read, 60 % insert, 20% delete
+    total 3,200,000 tasks</p>
+
+                <center>
+                    <img src="assets/img/fr9.png" alt="">
+                    <br>
+                    <b><big>Table 6. Mix Requests Performance Between CStore and Lock-free Skiplist</big></b>
+                    <br>
+                    (Thread Num 32, Total Tasks = 32,000,000)
+
+                    <br>
+                    <br>
+
+                    <img src="assets/img/fr10.jpeg" alt="">
+                    <br>
+                    <b><big>Figure 6. Mix Requests Performance Between CStore and Lock-free Skiplist</big></b>
+                </center>
+
+                For mix test, the result is similar. The lock-free intrinsics are implemented similarly, so CStrore’s speedup benefits from SIMD and data locality.
 
                 <h2 class="text-center">What we hope to achieve on Friday</h2>
                 <p>
-                    We hope to benchmark the performance under different workload (mix of insert, delete and find) and see a good speedup from std::map with a lock under read-heavy scenario.
+                    We hope to finely tune our parameters in different testing scenarios so the performance could be
+                    even better. We also want to find other lock-free skiplist implementations and do benchmark on them
                 </p>
 
             </div>

@@ -304,12 +304,13 @@
 
                 <p>In order to give a comprehensive testing of CStore, we test the read-only scenarios and mix-requests
                     scenarios separately. We will measure CStore’s performance with time spent on the queries, and
-                    compare it against std::map (red-black tree) in read-only scenario and a non-SIMD lock-free skiplist
-                    implementation we found in this github repo[2] (author: Jung-Sang Ahn jungsang.ahn@gmail.com). In
-                    both scenario, we generate requests with 16 threads launched by pthread_create() for each data
-                    structure, and each thread will send 200,000 requests and that’s 3,200,000 in total. For each test
-                    run we measure the time spent as the time of the last thread exits minus the time of the first
-                    thread starts. The accepted time is the minimum time of three consecutive tests.
+                    compare it against std::map (red-black tree) in read-only scenario, a serial skiplist
+                    implementation[2] and a non-SIMD lock-free skiplist implementation[3] in mix request scenario. In
+                    both scenario, we generate requests with 16 threads(1 thread when against serial skiplist) launched
+                    by pthread_create() for each data structure, and each thread will send 200,000 requests and that’s
+                    3,200,000 in total. For each test run we measure the time spent as the time of the last thread exits
+                    minus the time of the first thread starts. The accepted time is the minimum time of three
+                    consecutive tests.
                 </p>
 
                 <h4>Read only test
@@ -353,6 +354,28 @@
                 <h4>Mix test
                 </h4>
 
+                <p>We look at CStore’s perform against a serial skip list in a mix request scenario. The mix requests
+                    consists of ~20% reads, ~60% inserts and ~20% deletes.
+                </p>
+
+                <center>
+                    <img src="assets/img/ex1.png" alt="" width="400">
+                    <br>
+                    <b><big>Table 4. Mix request performance comparison with serial skiplist</big></b>
+
+                    <br>
+                    <br>
+
+                    <img src="assets/img/ex2.png" alt="" width="500">
+                    <br>
+                    <b><big>Figure 7. Mix request performance comparison with serial skiplist</big></b>
+                </center>
+
+                <p>As we can see, our implementation of SIMD skiplist has a slight better than an implementation of
+                    serial skiplist. When the dataset size is 400MB, our implementation is 1.45x faster than serial
+                    skiplist.
+                </p>
+
                 <p>Next we will look at CStore’s performance against a non-SIMD lock free skip list. The mix requests
                     consists of ~20% reads, ~60% inserts and ~20% deletes.
                 </p>
@@ -360,14 +383,14 @@
                 <center>
                     <img src="assets/img/ff8.png" alt="" width="400">
                     <br>
-                    <b><big>Table 4. Mix request performance comparison with non-SIMD lock-free skiplist</big></b>
+                    <b><big>Table 5. Mix request performance comparison with non-SIMD lock-free skiplist</big></b>
 
                     <br>
                     <br>
 
                     <img src="assets/img/ff10.png" alt="" width="500">
                     <br>
-                    <b><big>Figure 7. Mix request performance comparison with non-SIMD lock-free skiplist</big></b>
+                    <b><big>Figure 8. Mix request performance comparison with non-SIMD lock-free skiplist</big></b>
                 </center>
 
                 <p>In this test our solution is about 3 times faster than the non-SIMD lock free skiplist solution.
@@ -518,7 +541,9 @@
                     Symposium on Distributed Computing. Springer Berlin Heidelberg, 2001.
 
                 </p>
-                <p>[2] https://github.com/greensky00/skiplist</p>
+                <p>[2] https://github.com/petegoodliffe/skip_list
+                </p>
+                <p>[3] https://github.com/greensky00/skiplist</p>
 
                 <h2>LIST OF WORK BY EACH STUDENT
                 </h2>

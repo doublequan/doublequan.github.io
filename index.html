@@ -115,6 +115,15 @@
                     so it is actually slower than balance tree implementations like red-black tree.
                 </p>
 
+                <p>The workload of all the three operations can be break down into index searching part and storage
+                    layer operation overhead. In index search part, only within each node of index layer, we are able to
+                    make use of data parallel and apply SIMD comparison. Since the next index node in the searching path
+                    depends on the comparison result in the previous index node, we are not able to parallelize the
+                    comparison on multiple index node within one query. In the storage layer, we implemented a lock-free
+                    linked list to minimize the synchronization overhead. In this part, there is not much data
+                    parallelization can be applied.
+                </p>
+
                 <center>
                     <img src="assets/img/ff1.png" alt="" width="800">
                     <br>
